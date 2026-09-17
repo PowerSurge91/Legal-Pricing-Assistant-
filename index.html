@@ -121,10 +121,10 @@
     border: 1px solid var(--border); border-radius: 10px; line-height: 0;
   }
   .qr-box svg { width: 240px; height: 240px; display: block; }
-  .qr-url {
-    font-size: 12px; color: var(--muted); margin-top: 13px;
-    word-break: break-all; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  }
+  /* Was the raw site URL. Now a label: the github.io address is not something
+     to put on a slide. The real URL still lives in og:url and in the QR, and
+     the stale-QR warning below prints it when it needs to. */
+  .qr-url { font-size: 12.5px; color: var(--muted); margin-top: 13px; }
   .qr-dl { margin-top: 14px; font-size: 12.5px; }
   .qr-dl a { color: var(--navy); text-decoration: none; font-weight: 600; }
   .qr-dl a:hover { text-decoration: underline; }
@@ -233,7 +233,7 @@
   <section class="card qr-section">
     <h2>Scan to open this page</h2>
     <div class="qr-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 410 410" width="410" height="410" class="segno"><g transform="scale(10)"><path fill="#fff" d="M0 0h41v41h-41z"/><path class="qrline" stroke="#1a2b5e" d="M4 4.5h7m2 0h2m3 0h2m1 0h3m1 0h1m1 0h1m2 0h7m-33 1h1m5 0h1m5 0h1m2 0h1m2 0h1m2 0h1m1 0h1m2 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h1m1 0h5m3 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m4 0h3m4 0h1m2 0h3m2 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m3 0h1m1 0h1m3 0h1m6 0h2m1 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h5m4 0h3m4 0h1m1 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-24 1h1m1 0h2m1 0h1m2 0h2m2 0h1m2 0h1m-25 1h1m2 0h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h2m4 0h1m1 0h1m1 0h1m1 0h1m-25 1h3m1 0h5m4 0h2m3 0h2m1 0h4m3 0h2m-33 1h2m3 0h5m1 0h2m6 0h1m5 0h4m1 0h1m1 0h1m-33 1h1m8 0h1m1 0h1m2 0h1m1 0h1m2 0h4m1 0h2m2 0h2m2 0h1m-32 1h4m1 0h3m6 0h1m1 0h2m1 0h2m2 0h4m1 0h1m1 0h2m-29 1h1m2 0h3m3 0h1m1 0h2m2 0h3m2 0h1m1 0h1m1 0h1m2 0h2m-33 1h3m3 0h3m2 0h1m5 0h2m4 0h4m1 0h1m2 0h1m-31 1h1m1 0h1m4 0h1m1 0h1m4 0h1m1 0h6m1 0h1m1 0h2m3 0h1m-32 1h1m1 0h1m3 0h1m1 0h2m3 0h1m3 0h1m1 0h1m1 0h4m1 0h1m1 0h1m2 0h1m-20 1h1m1 0h1m2 0h2m1 0h5m2 0h1m1 0h1m1 0h1m-32 1h2m2 0h4m1 0h1m1 0h2m3 0h1m4 0h2m7 0h3m-31 1h1m4 0h1m3 0h1m1 0h2m1 0h3m2 0h1m2 0h2m1 0h1m-26 1h2m2 0h4m2 0h3m1 0h1m1 0h4m1 0h3m1 0h2m2 0h2m-32 1h2m1 0h2m1 0h2m1 0h1m1 0h1m1 0h4m2 0h3m1 0h3m2 0h1m1 0h2m-33 1h3m2 0h4m1 0h6m3 0h1m1 0h1m3 0h3m1 0h2m1 0h1m-32 1h2m1 0h2m1 0h4m2 0h1m2 0h1m3 0h2m3 0h2m1 0h2m1 0h2m-33 1h1m1 0h2m1 0h3m4 0h1m1 0h4m3 0h1m1 0h6m-21 1h4m1 0h1m5 0h1m1 0h2m1 0h1m3 0h2m-30 1h7m2 0h1m1 0h4m5 0h3m1 0h1m1 0h1m1 0h4m-32 1h1m5 0h1m1 0h1m1 0h3m1 0h9m1 0h1m3 0h1m3 0h1m-33 1h1m1 0h3m1 0h1m2 0h5m4 0h2m1 0h2m1 0h6m-30 1h1m1 0h3m1 0h1m1 0h1m2 0h1m3 0h1m1 0h1m3 0h1m1 0h2m1 0h1m1 0h3m-31 1h1m1 0h3m1 0h1m4 0h1m2 0h1m1 0h1m1 0h1m2 0h1m1 0h1m4 0h1m1 0h1m1 0h1m-33 1h1m5 0h1m2 0h1m3 0h1m1 0h3m3 0h1m1 0h2m4 0h1m-30 1h7m1 0h3m2 0h1m5 0h1m1 0h1m2 0h3m1 0h2m1 0h1"/></g></svg></div>
-    <div class="qr-url">https://powersurge91.github.io/Legal-Pricing-Assistant-/</div>
+    <div class="qr-url">Pricing Assistant &middot; works offline once downloaded</div>
     <div class="qr-dl no-print">
       <a href="assets/qr.png" download>QR as PNG</a><span>·</span>
       <a href="assets/qr.svg" download>SVG</a><span>·</span>

@@ -97,7 +97,7 @@ def main():
     print(f"  wrote      assets/qr.png  ({(ASSETS/'qr.png').stat().st_size:,} bytes)")
 
     # A captioned version, ready to drop straight onto a slide.
-    _write_qr_card(qr, url)
+    _write_qr_card(qr)
     print(f"  wrote      assets/qr-card.svg  ({(ASSETS/'qr-card.svg').stat().st_size:,} bytes)")
 
     # Inline SVG for the landing page itself, so the page has no external refs.
@@ -142,11 +142,16 @@ def main():
     print(f"  wrote      index.html  ({len(html):,} bytes)")
 
 
-def _write_qr_card(qr, url):
-    """QR plus a caption, on a white card -- drop-in for a slide or handout."""
+def _write_qr_card(qr):
+    """QR plus a caption, on a white card -- drop-in for a slide or handout.
+
+    The URL is deliberately not printed on it: a github.io address with a
+    username in it is not what you want on screen at a conference. The code
+    carries the URL; the card just says what scanning it gets you.
+    """
     body = _inline_svg(qr, scale=8)
     size = qr.symbol_size(scale=8, border=4)[0]
-    pad, cap = 12, 96
+    pad, cap = 12, 74
     w = size + pad * 2
     h = size + pad + cap
     card = f'''<?xml version="1.0" encoding="UTF-8"?>
@@ -160,9 +165,6 @@ def _write_qr_card(qr, url):
   <text x="{w/2}" y="{size + pad + 58}" text-anchor="middle"
         font-family="Arial, Helvetica, sans-serif" font-size="13"
         fill="#5b6480">Scan to download &#183; works offline</text>
-  <text x="{w/2}" y="{size + pad + 78}" text-anchor="middle"
-        font-family="Arial, Helvetica, sans-serif" font-size="10"
-        fill="#8a91a6">{url}</text>
 </svg>
 '''
     (ASSETS / "qr-card.svg").write_text(card, encoding="utf-8")

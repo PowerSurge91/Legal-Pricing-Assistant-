@@ -121,10 +121,10 @@
     border: 1px solid var(--border); border-radius: 10px; line-height: 0;
   }
   .qr-box svg { width: 240px; height: 240px; display: block; }
-  .qr-url {
-    font-size: 12px; color: var(--muted); margin-top: 13px;
-    word-break: break-all; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  }
+  /* Was the raw site URL. Now a label: the github.io address is not something
+     to put on a slide. The real URL still lives in og:url and in the QR, and
+     the stale-QR warning below prints it when it needs to. */
+  .qr-url { font-size: 12.5px; color: var(--muted); margin-top: 13px; }
   .qr-dl { margin-top: 14px; font-size: 12.5px; }
   .qr-dl a { color: var(--navy); text-decoration: none; font-weight: 600; }
   .qr-dl a:hover { text-decoration: underline; }
@@ -233,7 +233,7 @@
   <section class="card qr-section">
     <h2>Scan to open this page</h2>
     <div class="qr-box">__QR_SVG__</div>
-    <div class="qr-url">__APP_URL__</div>
+    <div class="qr-url">Pricing Assistant &middot; works offline once downloaded</div>
     <div class="qr-dl no-print">
       <a href="assets/qr.png" download>QR as PNG</a><span>·</span>
       <a href="assets/qr.svg" download>SVG</a><span>·</span>
