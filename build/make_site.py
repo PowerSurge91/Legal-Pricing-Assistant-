@@ -43,6 +43,31 @@ DEFAULT_URL = "https://powersurge91.github.io/Legal-Pricing-Assistant-/"
 NAVY = "#1a2b5e"
 
 
+def _inline_svg(qr, scale, border=4):
+    """Inline SVG for the QR, safe to resize with CSS.
+
+    Two things bite here, and both produce a code a camera cannot read:
+
+    * segno's inline SVG carries width/height but NO viewBox. Setting a CSS
+      width on it therefore CROPS the symbol instead of scaling it -- a 410px
+      symbol shown at 240px loses two of its three finder patterns.
+    * border=4 keeps the mandatory 4-module quiet zone inside the image, rather
+      than depending on whatever padding the surrounding CSS happens to give.
+    """
+    svg = qr.svg_inline(scale=scale, border=border, dark=NAVY, light="#ffffff")
+    w, h = qr.symbol_size(scale=scale, border=border)
+    svg, n = re.subn(
+        r"^<svg\b[^>]*>",
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" '
+        f'width="{w}" height="{h}" class="segno">',
+        svg, count=1)
+    if n != 1:
+        raise SystemExit("ERROR: could not rewrite the QR <svg> opening tag")
+    if "viewBox" not in svg:
+        raise SystemExit("ERROR: QR svg still has no viewBox")
+    return svg
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", default=DEFAULT_URL,
@@ -76,7 +101,7 @@ def main():
     print(f"  wrote      assets/qr-card.svg  ({(ASSETS/'qr-card.svg').stat().st_size:,} bytes)")
 
     # Inline SVG for the landing page itself, so the page has no external refs.
-    inline_svg = qr.svg_inline(scale=10, border=0, dark=NAVY, light="#ffffff")
+    inline_svg = _inline_svg(qr, scale=10)
 
     if not TEMPLATE.exists():
         print(f"ERROR: missing template {TEMPLATE}", file=sys.stderr)
@@ -115,9 +140,9 @@ def main():
 
 def _write_qr_card(qr, url):
     """QR plus a caption, on a white card -- drop-in for a slide or handout."""
-    body = qr.svg_inline(scale=8, border=0, dark=NAVY, light="#ffffff")
-    size = qr.symbol_size(scale=8, border=0)[0]
-    pad, cap = 36, 96
+    body = _inline_svg(qr, scale=8)
+    size = qr.symbol_size(scale=8, border=4)[0]
+    pad, cap = 12, 96
     w = size + pad * 2
     h = size + pad + cap
     card = f'''<?xml version="1.0" encoding="UTF-8"?>
