@@ -863,6 +863,10 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 // ── BEGIN FIRM CONFIG ──
 let FIRM_CONFIG = {"name":"[Law Firm Name]","office":"","address":"","disclaimer":"Confidential — For Internal Use Only","profitThreshold":"","realizationThreshold":"90","cfoTarget":"20","cfoFloor":"10","woDisclaimer":"","rangeNote":"","defaultMetric":"","defaultBasis":"","updated":""};
 // ── END FIRM CONFIG ──
+// Built-in profit policy, used when the Settings fields are left blank. Declared here,
+// outside the splice markers and ahead of every consumer: `const` is not hoisted, and
+// defaultScenarios() reads it while the scenario lists are being initialised.
+const DEFAULT_CFO_TARGET = 20, DEFAULT_CFO_FLOOR = 10;
 let RATE_DATA_VERSION = "Firm Rates 2026 (Sample)";
 let RATE_DATA_UPDATED = "";
 // ── BEGIN RATE DATA ──
@@ -1103,7 +1107,7 @@ const RATE_DATA = [
         <div class="form-group" style="align-self:center;"><div class="text-muted" style="margin-top:14px;">When an analysis falls below either threshold, its KPI card turns red and an "may require additional approval" note appears. Leave blank to disable. (Realization below X% = discount above 100−X%.)</div></div>
       </div>
 
-      <h5 style="margin-top:14px;">Write-off Policy <span class="note" style="text-transform:none;letter-spacing:0;font-weight:normal;">(CFO directive — blank uses 20% / 10%)</span></h5>
+      <h5 style="margin-top:14px;">Write-off Policy <span class="note" style="text-transform:none;letter-spacing:0;font-weight:normal;">(CFO directive — <span id="cfg-wo-policy-hint">blank uses 20% / 10%</span>)</span></h5>
       <div class="form-row">
         <div class="form-group narrow"><label>Target Profit %</label><input type="number" id="cfg-cfo-target" min="0" max="100" placeholder="20" style="width:100px;"></div>
         <div class="form-group narrow"><label>Profit Floor %</label><input type="number" id="cfg-cfo-floor" min="0" max="100" placeholder="10" style="width:100px;"></div>
@@ -1252,7 +1256,7 @@ Examples:
           <li><strong>Rate Proposals &amp; Ranges</strong> — "what rates should we include in this pitch?" Build a pitch-ready view with market ranges by title and named key team members.</li>
           <li><strong>Budget</strong> — "what will this work cost by phase and task?" Build phase/task budgets by timekeeper, model adjustments, and produce a client-friendly summary.</li>
           <li><strong>Fixed Fee</strong> — "can we do this work for $500k?" Test a proposed fee against the cost of the team to see realization and margin.</li>
-          <li><strong>Write-off</strong> — "how much of this bill can we write off before profitability breaks?" Matter-level scenarios against the CFO's 20% target / 10% floor.</li>
+          <li><strong>Write-off</strong> — "how much of this bill can we write off before profitability breaks?" Matter-level scenarios against the CFO's <span id="guide-wo-policy">20% target / 10% floor</span>.</li>
         </ul>
         <ol style="margin-top:6px;">
           <li>Select the analysis type — the right inputs appear automatically.</li>
@@ -1260,7 +1264,7 @@ Examples:
           <li>For Blended/Fixed Fee: use <strong>Staffing Plans</strong> to compare alternative team mixes side by side (e.g. partner-heavy vs. associate-heavy).</li>
           <li>Click <strong>Run Analysis</strong>.</li>
         </ol>
-        <div class="help-tip">Tip: "Customize Scenarios" lets you change the default discount tiers (10% / 20%) and margin targets (45% / 50%) before running.</div>
+        <div class="help-tip">Tip: "Customize Scenarios" lets you change the default discount tiers (10% / 20%) and margin targets (<span id="guide-scen-targets">20% / 10%</span>) before running.</div>
       </div>
 
       <div class="form-row" style="margin-bottom:16px;">
@@ -1711,7 +1715,13 @@ let currency       = 'USD';
 let blockCounter   = 0;
 // Blended/Fixed scenarios — dynamic list (baseline 0% is always shown separately).
 // Types: 'discount' (% off baseline), 'rate' (target blended rate $), 'margin' (target profit margin %).
-let blendedScenarios = [ {type:'discount',value:10}, {type:'discount',value:20}, {type:'margin',value:45}, {type:'margin',value:50} ];
+// Default scenario rows. The margin rows track the firm's profit target and floor from
+// Settings, so changing the policy there changes what every new analysis starts from.
+function defaultScenarios() {
+  return [ {type:'discount',value:10}, {type:'discount',value:20},
+           {type:'margin',value:cfoTarget()}, {type:'margin',value:cfoFloor()} ];
+}
+let blendedScenarios = defaultScenarios();
 let blendedMixMode   = false;   // blended only: analyse by % staffing mix instead of hours/fees
 let fixedMixMode     = false;   // fixed fee only: derive hours from % staffing mix + a target fee (standard rates)
 // True when the given (or current) analysis type is currently in its "% staffing mix" mode.
@@ -2036,7 +2046,7 @@ const TYPE_DESCRIPTIONS = {
   range:        'Pitch-ready proposed rates with optional title ranges and named key team members.',
   budget:       'Build a phase/task budget by timekeeper, then model fee adjustments and client-facing summaries.',
   fixed:        'Test a proposed fixed fee against team cost — realization and margin at that fee.',
-  writeoff:     'Matter write-off scenarios against the CFO’s 20% profit target and 10% floor.',
+  get writeoff() { return `Matter write-off scenarios against the CFO’s ${cfoTarget()}% profit target and ${cfoFloor()}% floor.`; },
 };
 
 function switchAnalysis() {
@@ -4043,8 +4053,8 @@ function firmName() { return (FIRM_CONFIG.name || '').trim() || '[Law Firm Name]
 // Profit margins remain — only the underlying cost figures are suppressed.
 function costHidden() { return FIRM_CONFIG.costRates === 'hide'; }
 // Configurable policy values (fall back to rulebook defaults when blank)
-function cfoTarget() { const n = parseFloat(FIRM_CONFIG.cfoTarget); return Number.isFinite(n) && n > 0 ? n : 20; }
-function cfoFloor()  { const n = parseFloat(FIRM_CONFIG.cfoFloor);  return Number.isFinite(n) && n > 0 ? n : 10; }
+function cfoTarget() { const n = parseFloat(FIRM_CONFIG.cfoTarget); return Number.isFinite(n) && n > 0 ? n : DEFAULT_CFO_TARGET; }
+function cfoFloor()  { const n = parseFloat(FIRM_CONFIG.cfoFloor);  return Number.isFinite(n) && n > 0 ? n : DEFAULT_CFO_FLOOR; }
 const RANGE_NOTE_DEFAULT = 'The rates set out above are indicative and subject to review on an annual basis. Certain specialist individuals or practice areas may be excluded from these ranges and quoted separately.';
 function rangeNoteText() { return (FIRM_CONFIG.rangeNote || '').trim() || RANGE_NOTE_DEFAULT; }
 function defaultWODisclaimer() {
@@ -4057,7 +4067,29 @@ function defaultWODisclaimer() {
 }
 function woDisclaimerText() { return (FIRM_CONFIG.woDisclaimer || '').trim() || defaultWODisclaimer(); }
 // Apply persisted output defaults (metric, rate basis) on startup
+// When the profit policy changes in Settings, move any scenario row that still holds the
+// OLD target or floor onto the new one. Rows the user typed themselves are left alone.
+function resyncScenarioTargets(prevTarget, prevFloor) {
+  const nextTarget = cfoTarget(), nextFloor = cfoFloor();
+  const remap = v => (v === prevTarget ? nextTarget : v === prevFloor ? nextFloor : v);
+  [blendedScenarios, woScenarios].forEach(list =>
+    list.forEach(sc => { if (sc.type === 'margin') sc.value = remap(sc.value); }));
+  if (typeof renderBlendedScenRows === 'function') renderBlendedScenRows();
+  if (typeof renderWOScenRows === 'function') renderWOScenRows();
+}
+
+// Fills every spot that quotes the profit policy in prose, so the Guide and Settings
+// hints always read back whatever is configured rather than a baked-in number.
+function refreshPolicyText() {
+  const t = cfoTarget(), f = cfoFloor();
+  const put = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+  put('cfg-wo-policy-hint', `blank uses ${DEFAULT_CFO_TARGET}% / ${DEFAULT_CFO_FLOOR}%`);
+  put('guide-wo-policy', `${t}% target / ${f}% floor`);
+  put('guide-scen-targets', `${t}% / ${f}%`);
+}
+
 function applyConfigDefaults() {
+  refreshPolicyText();
   if (FIRM_CONFIG.defaultMetric === 'discount') {
     showMetric = 'discount';
     const s = document.getElementById('metric-mode-select'); if (s) s.value = 'discount';
@@ -4157,7 +4189,10 @@ async function saveAllSettings() {
     },
     {
       applyInMemory() {
+        const prevTarget = cfoTarget(), prevFloor = cfoFloor();
         FIRM_CONFIG = cfg;
+        resyncScenarioTargets(prevTarget, prevFloor);
+        refreshPolicyText();
         document.getElementById('firm-name-display').textContent = firmName();
         if (ratePayload) {
           RATE_DATA.length = 0; RATE_DATA.push(...ratePayload.records);
@@ -4927,7 +4962,7 @@ function fixedSinglePlan(stats, fixedFee, planIdx) {
     html += buildKPIStrip([
       { label: 'Fixed Fee (Proposed)',      value: curr(fixedFee), sub: feeDerived ? 'staffing plan sized to this fee' : 'vs ' + curr(totalStdFees) + ' at ' + bl.toLowerCase() + ' rates' },
       { label: (metricIsDiscount()?'Discount':'Realization') + ' @ Fixed Fee', value: fmtMetric(feeReal), sub: feeDerived ? '100% by construction — hours are sized to the fee' : undefined, cls: realCls(feeReal), metric:'realization', metricValue: feeReal },
-      { label: 'Profit Margin @ Fixed Fee', value: Math.round(feeMargin) + '%', sub: 'target 45–50%', cls: marginCls, metric:'profit', metricValue: feeMargin },
+      { label: 'Profit Margin @ Fixed Fee', value: Math.round(feeMargin) + '%', sub: `target ${cfoTarget()}% \u00b7 floor ${cfoFloor()}%`, cls: marginCls, metric:'profit', metricValue: feeMargin },
     ]);
   } else {
     const stdMargin = (totalStdFees - totalCost) / totalStdFees * 100;
@@ -4974,7 +5009,11 @@ function profitCls(margin) {
   if (!Number.isFinite(+margin)) return '';
   const t = profitThreshold();
   if (t != null) return margin < t ? 'kpi-danger' : margin < t + 5 ? 'kpi-warn' : '';
-  return margin < 45 ? 'kpi-danger' : margin < 50 ? 'kpi-warn' : '';
+  // No explicit approval threshold set: grade against the firm's profit policy —
+  // below the floor is a breach, floor-to-target is short of target, at/above target is fine.
+  const target = cfoTarget(), floor = cfoFloor();
+  if (floor < target) return margin < floor ? 'kpi-danger' : margin < target ? 'kpi-warn' : '';
+  return margin < target ? 'kpi-danger' : margin < target + 5 ? 'kpi-warn' : '';
 }
 function realCls(realPct) {
   if (!Number.isFinite(+realPct)) return '';
@@ -5698,12 +5737,7 @@ ${clone.innerHTML}
 // ════════════════════════════
 // WRITE-OFF ANALYSIS
 // ════════════════════════════
-let woScenarios = [
-  { type: 'discount', value: 10 },
-  { type: 'discount', value: 20 },
-  { type: 'margin',   value: 55 },
-  { type: 'margin',   value: 50 },
-];
+let woScenarios = defaultScenarios();
 
 function toggleWOCostMethod() {
   const direct = document.getElementById('wocm-direct').checked;
