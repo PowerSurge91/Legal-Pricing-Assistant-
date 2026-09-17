@@ -393,7 +393,7 @@
 
 <script>
 // ── BEGIN FIRM CONFIG ──
-let FIRM_CONFIG = {"name":"[Law Firm Name]","office":"","address":"","disclaimer":"Confidential — For Internal Use Only","profitThreshold":"","realizationThreshold":"","cfoTarget":"","cfoFloor":"","woDisclaimer":"","rangeNote":"","defaultMetric":"","defaultBasis":"","updated":""};
+let FIRM_CONFIG = {"name":"[Law Firm Name]","office":"","address":"","disclaimer":"Confidential — For Internal Use Only","profitThreshold":"","realizationThreshold":"90","cfoTarget":"20","cfoFloor":"10","woDisclaimer":"","rangeNote":"","defaultMetric":"","defaultBasis":"","updated":""};
 // ── END FIRM CONFIG ──
 let RATE_DATA_VERSION = "Firm Rates 2026 (Sample)";
 let RATE_DATA_UPDATED = "";
@@ -635,10 +635,10 @@ const RATE_DATA = [
         <div class="form-group" style="align-self:center;"><div class="text-muted" style="margin-top:14px;">When an analysis falls below either threshold, its KPI card turns red and an "may require additional approval" note appears. Leave blank to disable. (Realization below X% = discount above 100−X%.)</div></div>
       </div>
 
-      <h5 style="margin-top:14px;">Write-off Policy <span class="note" style="text-transform:none;letter-spacing:0;font-weight:normal;">(CFO directive — blank uses 55% / 50%)</span></h5>
+      <h5 style="margin-top:14px;">Write-off Policy <span class="note" style="text-transform:none;letter-spacing:0;font-weight:normal;">(CFO directive — blank uses 20% / 10%)</span></h5>
       <div class="form-row">
-        <div class="form-group narrow"><label>Target Profit %</label><input type="number" id="cfg-cfo-target" min="0" max="100" placeholder="55" style="width:100px;"></div>
-        <div class="form-group narrow"><label>Profit Floor %</label><input type="number" id="cfg-cfo-floor" min="0" max="100" placeholder="50" style="width:100px;"></div>
+        <div class="form-group narrow"><label>Target Profit %</label><input type="number" id="cfg-cfo-target" min="0" max="100" placeholder="20" style="width:100px;"></div>
+        <div class="form-group narrow"><label>Profit Floor %</label><input type="number" id="cfg-cfo-floor" min="0" max="100" placeholder="10" style="width:100px;"></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>Write-off Disclaimer <span class="note">(blank uses the standard CFO note)</span></label><textarea id="cfg-wo-disclaimer" rows="3" placeholder="Leave blank for the standard year-end bonus / CFO directive note."></textarea></div>
@@ -784,7 +784,7 @@ Examples:
           <li><strong>Rate Proposals &amp; Ranges</strong> — "what rates should we include in this pitch?" Build a pitch-ready view with market ranges by title and named key team members.</li>
           <li><strong>Budget</strong> — "what will this work cost by phase and task?" Build phase/task budgets by timekeeper, model adjustments, and produce a client-friendly summary.</li>
           <li><strong>Fixed Fee</strong> — "can we do this work for $500k?" Test a proposed fee against the cost of the team to see realization and margin.</li>
-          <li><strong>Write-off</strong> — "how much of this bill can we write off before profitability breaks?" Matter-level scenarios against the CFO's 55% target / 50% floor.</li>
+          <li><strong>Write-off</strong> — "how much of this bill can we write off before profitability breaks?" Matter-level scenarios against the CFO's 20% target / 10% floor.</li>
         </ul>
         <ol style="margin-top:6px;">
           <li>Select the analysis type — the right inputs appear automatically.</li>
@@ -1568,7 +1568,7 @@ const TYPE_DESCRIPTIONS = {
   range:        'Pitch-ready proposed rates with optional title ranges and named key team members.',
   budget:       'Build a phase/task budget by timekeeper, then model fee adjustments and client-facing summaries.',
   fixed:        'Test a proposed fixed fee against team cost — realization and margin at that fee.',
-  writeoff:     'Matter write-off scenarios against the CFO’s 55% profit target and 50% floor.',
+  writeoff:     'Matter write-off scenarios against the CFO’s 20% profit target and 10% floor.',
 };
 
 function switchAnalysis() {
@@ -3536,8 +3536,8 @@ function firmName() { return (FIRM_CONFIG.name || '').trim() || '[Law Firm Name]
 // Profit margins remain — only the underlying cost figures are suppressed.
 function costHidden() { return FIRM_CONFIG.costRates === 'hide'; }
 // Configurable policy values (fall back to rulebook defaults when blank)
-function cfoTarget() { const n = parseFloat(FIRM_CONFIG.cfoTarget); return Number.isFinite(n) && n > 0 ? n : 55; }
-function cfoFloor()  { const n = parseFloat(FIRM_CONFIG.cfoFloor);  return Number.isFinite(n) && n > 0 ? n : 50; }
+function cfoTarget() { const n = parseFloat(FIRM_CONFIG.cfoTarget); return Number.isFinite(n) && n > 0 ? n : 20; }
+function cfoFloor()  { const n = parseFloat(FIRM_CONFIG.cfoFloor);  return Number.isFinite(n) && n > 0 ? n : 10; }
 const RANGE_NOTE_DEFAULT = 'The rates set out above are indicative and subject to review on an annual basis. Certain specialist individuals or practice areas may be excluded from these ranges and quoted separately.';
 function rangeNoteText() { return (FIRM_CONFIG.rangeNote || '').trim() || RANGE_NOTE_DEFAULT; }
 function defaultWODisclaimer() {
