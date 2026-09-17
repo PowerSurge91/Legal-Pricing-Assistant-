@@ -127,10 +127,14 @@ def main():
             sys.exit(1)
         html = html.replace(key, val)
 
-    leftovers = re.findall(r'\b(?:src|href)\s*=\s*["\'](https?://[^"\']+)["\']', html, re.I)
-    external = [u for u in leftovers if u != url]
-    if external:
-        print("ERROR: landing page has external references:\n  " + "\n  ".join(external),
+    # Same rule as inline.py: block anything that would be fetched, allow plain
+    # <a href> links (the author's profile, the site's own canonical URL).
+    fetched = [m.group(1) for m in
+               re.finditer(r'\bsrc\s*=\s*["\'](https?://[^"\']+)["\']', html, re.I)]
+    for tag in re.finditer(r'<link\b[^>]*>', html, re.I):
+        fetched += re.findall(r'href\s*=\s*["\'](https?://[^"\']+)["\']', tag.group(0), re.I)
+    if fetched:
+        print("ERROR: landing page would fetch external resources:\n  " + "\n  ".join(sorted(set(fetched))),
               file=sys.stderr)
         sys.exit(1)
 

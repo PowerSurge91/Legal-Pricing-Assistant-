@@ -206,14 +206,24 @@ function readAppFileViaPicker() {
     html = html.replace(anchor2, "\n" + helper.strip("\n"), 1)
     print("  patched  self-save fallback for file:// URLs")
 
-    # ---- 4. Verify nothing external is left -----------------------------
+    # ---- 4. Verify nothing external is FETCHED ---------------------------
+    # The point of the offline guarantee is that opening the file makes no
+    # network request. That means no external src=, no stylesheet <link>, no
+    # @import. A plain <a href> is not a fetch -- it is inert until somebody
+    # clicks it, and the author's profile link is deliberately one of those.
     leftovers = set()
-    for m in re.finditer(r'\b(?:src|href)\s*=\s*["\'](https?://[^"\']+)["\']', html, re.I):
-        leftovers.add(m.group(1))
+    for m in re.finditer(r'\bsrc\s*=\s*["\'](https?://[^"\']+)["\']', html, re.I):
+        leftovers.add("src: " + m.group(1))
+    for tag in re.finditer(r'<link\b[^>]*>', html, re.I):
+        for m in re.finditer(r'href\s*=\s*["\'](https?://[^"\']+)["\']', tag.group(0), re.I):
+            leftovers.add("link: " + m.group(1))
     for m in re.finditer(r"@import\s+url\(\s*['\"]?(https?://[^'\")]+)", html, re.I):
-        leftovers.add(m.group(1))
+        leftovers.add("@import: " + m.group(1))
     if leftovers:
-        die("external references remain after inlining:\n  " + "\n  ".join(sorted(leftovers)))
+        die("external references that would be fetched remain:\n  " + "\n  ".join(sorted(leftovers)))
+
+    anchors = sorted({m.group(1) for m in
+                      re.finditer(r'<a\b[^>]*\bhref\s*=\s*["\'](https?://[^"\']+)["\']', html, re.I)})
 
     OUT.write_text(html, encoding="utf-8")
     digest = hashlib.sha256(OUT.read_bytes()).hexdigest()
@@ -222,7 +232,9 @@ function readAppFileViaPicker() {
     print(f"  source   {original_len:>10,} bytes")
     print(f"  output   {len(html):>10,} bytes  ->  {OUT.relative_to(ROOT)}")
     print(f"  sha256   {digest}")
-    print("  no external src/href references remain")
+    print("  nothing external is fetched")
+    for a in anchors:
+        print(f"  outbound link (inert until clicked)  {a}")
 
 
 if __name__ == "__main__":

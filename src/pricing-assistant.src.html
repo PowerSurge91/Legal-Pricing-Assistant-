@@ -55,6 +55,10 @@
   #app-header .firm-name { font-size: 17px; font-weight: 700; letter-spacing: -0.2px; color: var(--white); }
   #app-header .tool-label { font-size: 9.5px; color: #9db0dd; margin-top: 3px; text-transform: uppercase; letter-spacing: 1.6px; font-weight: 600; }
   #app-header .creator-label { font-size: 10px; color: #dce4f7; margin-top: 5px; letter-spacing: 0.15px; font-weight: 500; }
+  /* Author link. Inert until clicked, so the file still runs with no network. */
+  #app-header .author-link { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.32); transition: color 0.18s, border-color 0.18s; }
+  #app-header .author-link:hover { color: var(--white); border-bottom-color: var(--white); }
+  #app-header .author-link:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(255,255,255,0.6); border-radius: 2px; }
   #app-header .rate-badge { font-size: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.22); color: #dce4f7; padding: 5px 12px; border-radius: 20px; font-weight: 600; letter-spacing: 0.2px; }
   #app-header .btn-header { background: rgba(255,255,255,0.1); color: var(--white); border: 1px solid rgba(255,255,255,0.35); border-radius: var(--radius-sm); font-family: var(--font-ui); font-size: 11px; font-weight: 600; padding: 6px 16px; cursor: pointer; transition: background 0.18s, border-color 0.18s; }
   #app-header .btn-header:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); }
@@ -600,7 +604,7 @@ const RATE_DATA = [
   <div>
     <div class="firm-name" id="firm-name-display">[Law Firm Name]</div>
     <div class="tool-label">Pricing Assistant</div>
-    <div class="creator-label">Built by Sergey Mezhiritskiy for LVNX</div>
+    <div class="creator-label">Built by <a class="author-link" href="https://www.linkedin.com/in/sergey-mezhiritskiy-alpp-b9201a28" target="_blank" rel="noopener noreferrer">Sergey Mezhiritskiy</a> for LVNX</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <div class="rate-badge" id="rate-badge">Loading...</div>
