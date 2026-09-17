@@ -791,6 +791,44 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   .map-warn-list { font-size: 10px; color: #7a5200; max-height: 90px; overflow-y: auto; margin-top: 4px; padding: 6px 8px; background: #fff8e6; border-radius: 2px; }
   .import-support-note { font-size: 10px; color: #5a6075; margin-top: 8px; font-style: italic; }
 
+  /* ── Narrow screens ──
+     This is a desktop tool and stays laid out for desktop. These rules only keep it
+     from looking broken when someone opens it on a phone right after scanning the QR
+     code. Nothing here applies above 768px, so the desktop layout is untouched. */
+  @media (max-width: 768px) {
+    /* The header is a single flex row; at phone width the firm name was breaking
+       across three lines and the rate badge was crushed into a narrow pill. */
+    #app-header { flex-wrap: wrap; gap: 10px 14px; padding: 14px 16px; }
+    #app-header .firm-name { font-size: 16px; }
+    #app-header .rate-badge { white-space: normal; line-height: 1.5; }
+
+    #main { padding: 16px 12px 44px; }
+
+    /* The KPI strip is a fixed 3-column grid; at phone width the figures were being
+       clipped mid-number ("$565,0("). One per row gives each value its full space. */
+    .kpi-strip { grid-template-columns: 1fr; gap: 10px; }
+
+    /* iOS zooms the whole page whenever a focused field is under 16px, and these are
+       set to 11-12px by several more specific rules (table.tk-table input[type=number],
+       #parse-review input, and so on). !important lifts them all at once and stays
+       confined to this narrow-screen block. */
+    input, select, textarea,
+    table.tk-table input, table.budget-table input, table.budget-table select,
+    table.disc-table input, table.ri-rules-table input,
+    .plan-pill .plan-name-input,
+    #parse-review input, #parse-review select { font-size: 16px !important; }
+
+    /* Output tables are wider than a phone screen and .card clips at overflow:hidden,
+       so Realization % and Profit Margin % were cut off with no way to reach them.
+       display:block turns each table into its own horizontal scroller. */
+    table.result-table, table.budget-table, table.disc-table {
+      display: block;
+      min-width: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
   /* ── Print ── */
   @media print {
     body { background: white; font-size: 10.5pt; }
