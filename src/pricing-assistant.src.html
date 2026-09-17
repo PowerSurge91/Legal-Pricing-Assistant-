@@ -1,4 +1,17 @@
 <!DOCTYPE html>
+<!--
+  Pricing Assistant
+  Copyright (c) 2026 Sergey Mezhiritskiy. All rights reserved.
+
+  Free to use in your own practice, including commercially, including to price
+  and bill your own legal work. You may adapt it for your own internal use.
+
+  NOT free to sell, to build into a product or service offered to third
+  parties, to host as a service, or to rebrand as your own. Vendors: ask first.
+
+  Full terms: LICENSE.  Bundled libraries: THIRD-PARTY-NOTICES.md
+  https://www.linkedin.com/in/sergey-mezhiritskiy-alpp-b9201a28
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -56,6 +69,11 @@
   #app-header .tool-label { font-size: 9.5px; color: #9db0dd; margin-top: 3px; text-transform: uppercase; letter-spacing: 1.6px; font-weight: 600; }
   #app-header .creator-label { font-size: 10px; color: #dce4f7; margin-top: 5px; letter-spacing: 0.15px; font-weight: 500; }
   /* Author link. Inert until clicked, so the file still runs with no network. */
+  /* Licence line. Sits under the app, hidden when printing so it never lands
+     in a client-facing export. */
+  #app-footer { max-width: 1160px; margin: -40px auto 0; padding: 0 16px 26px; font-size: 10px; color: #8891a8; line-height: 1.7; text-align: center; }
+  #app-footer a { color: #6a7290; text-decoration: none; border-bottom: 1px solid #ccd2e2; }
+  #app-footer a:hover { color: var(--navy); border-bottom-color: var(--navy); }
   #app-header .author-link { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.32); transition: color 0.18s, border-color 0.18s; }
   #app-header .author-link:hover { color: var(--white); border-bottom-color: var(--white); }
   #app-header .author-link:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(255,255,255,0.6); border-radius: 2px; }
@@ -1265,6 +1283,12 @@ Examples:
   </div>
 
 </div>
+
+<div id="app-footer" class="no-print">
+  Pricing Assistant &copy; 2026 <a href="https://www.linkedin.com/in/sergey-mezhiritskiy-alpp-b9201a28" target="_blank" rel="noopener noreferrer">Sergey Mezhiritskiy</a>
+  &middot; free to use in your own practice &middot; not for resale, or for inclusion in a product or service sold to others.
+</div>
+
 <div id="toast"></div>
 
 <script>

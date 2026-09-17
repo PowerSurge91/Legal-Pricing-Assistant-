@@ -89,6 +89,23 @@ the asset paths are served verbatim.
 > **Note:** GitHub Pages on a **private** repo requires a paid plan. On the free
 > plan the repository must be public for the download link to work.
 
+## License
+
+Copyright (c) 2026 Sergey Mezhiritskiy. See [LICENSE](LICENSE) for the full terms.
+
+**Free to use in your own practice** — including commercially, including to
+scope, price, quote and bill your own legal work. Firms, in-house teams and
+individual practitioners need no permission, and may adapt it for internal use.
+
+**Not free to resell.** It may not be sold, incorporated into a product or
+service offered to third parties, hosted as a service, or rebranded. Those
+terms are aimed at software vendors, not at firms using it for their own work;
+sharing an analysis or export it produces with your own clients is ordinary use.
+
+The four bundled libraries keep their own permissive licenses — see
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). This project's terms do not
+restrict them.
+
 ## Privacy
 
 The app runs wholly in the browser. It makes no network requests — the build

@@ -1,0 +1,72 @@
+Pricing Assistant
+Copyright (c) 2026 Sergey Mezhiritskiy. All rights reserved.
+
+
+TERMS OF USE
+
+1. PERMITTED USE
+
+   You may use this software free of charge and without seeking permission,
+   including for commercial purposes within your own organisation, and
+   including to scope, price, quote and bill your own legal work.
+
+   This permission is intended to be broad for practitioners. Law firms,
+   in-house legal departments, legal operations and pricing teams, and
+   individual practitioners may all use it in the ordinary course of their
+   work.
+
+   You may modify it for your own internal use, including replacing the
+   sample rate data with your own.
+
+2. PROHIBITED USE
+
+   Without the prior written permission of the copyright holder, you may not:
+
+   (a) sell, license, sublicense, rent or otherwise charge for this software,
+       whether on its own or as a component of a larger offering;
+
+   (b) incorporate this software, or any substantial part of it, into a
+       product, platform or service that is provided, offered or marketed to
+       third parties, whether or not a fee is charged;
+
+   (c) provide this software to third parties as a hosted, managed or
+       software-as-a-service offering; or
+
+   (d) distribute a modified, rebranded or white-labelled copy, or present
+       this software or its interface as your own work.
+
+   For the avoidance of doubt, paragraphs (a) to (d) are directed at software
+   vendors and service providers. They are not intended to restrict a firm's
+   ordinary use of the software in the conduct of its own practice, including
+   sharing an analysis, proposal or exported document produced with it with
+   that firm's own clients.
+
+3. NOTICES
+
+   You may not remove, alter or obscure the copyright notice, the author
+   attribution, or these terms from any copy of the software.
+
+4. THIRD-PARTY COMPONENTS
+
+   This software incorporates the third-party libraries listed in
+   THIRD-PARTY-NOTICES.md. Those libraries remain subject to their own
+   licenses, which are permissive. These terms do not restrict, and cannot
+   restrict, any rights you have in those components.
+
+5. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+   The software produces pricing estimates from data supplied by its user. It
+   is not legal, financial or accounting advice, and the author accepts no
+   responsibility for any decision made using it.
+
+6. PERMISSION BEYOND THESE TERMS
+
+   If you want to do something these terms do not allow, ask. Contact the
+   author at https://www.linkedin.com/in/sergey-mezhiritskiy-alpp-b9201a28
