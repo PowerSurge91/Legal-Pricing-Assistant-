@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing Assistant — Live Demo</title>
+<meta name="author" content="Sergey Mezhiritskiy">
+<meta name="description" content="A guided walkthrough of the Pricing Assistant: firm settings, a weighted rate increase analysis across five timekeepers, and the PDF it exports.">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231a2b5e'/><text x='16' y='23' font-size='19' font-family='Arial,Helvetica,sans-serif' font-weight='700' fill='white' text-anchor='middle'>P</text></svg>">
+<style>
+  :root {
+    --navy:#1a2b5e; --navy-deep:#131f45; --navy-hover:#24397a;
+    --ink:#1e2435; --muted:#5b6480; --faint:#8a91a6;
+    --border:#dde0eb; --bg:#f3f4f9; --card:#fff; --success:#1a6b2e;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --shadow:0 1px 2px rgba(19,31,69,.05),0 8px 28px rgba(19,31,69,.09);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55}
+
+  header{background:linear-gradient(120deg,var(--navy-deep) 0%,var(--navy) 55%,#23346c 100%);color:#fff;padding:20px 16px 24px;text-align:center}
+  header .kicker{font-size:10px;text-transform:uppercase;letter-spacing:1.7px;font-weight:600;color:#9db0dd;margin-bottom:7px}
+  header h1{font-size:23px;font-weight:700;letter-spacing:-.3px}
+  header .back{position:absolute;left:16px;top:20px;color:#dce4f7;text-decoration:none;font-size:13px;font-weight:600}
+  header .back:hover{color:#fff}
+
+  main{max-width:1180px;margin:0 auto;padding:0 16px 56px}
+
+  /* ── Stage ── */
+  .stage-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-top:-14px;overflow:hidden}
+
+  .narration{display:flex;gap:14px;align-items:flex-start;padding:16px 20px;border-bottom:1px solid var(--border);background:#fbfcfe;min-height:86px}
+  .narration .num{flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px}
+  .narration .txt h2{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:3px}
+  .narration .txt p{font-size:13.5px;color:var(--muted)}
+  .narration .txt b{color:var(--ink);font-weight:600}
+
+  .viewport{position:relative;background:#f3f4f9;overflow:hidden}
+  .viewport iframe{border:0;width:1360px;height:1000px;transform-origin:top left;display:block}
+  /* The export is shown as an image of the real PDF: an <img> renders everywhere,
+     while <iframe src="*.pdf"> needs a browser PDF viewer that phones often lack. */
+  #pdf-stage{display:none;position:absolute;inset:0;background:#4a4f57;overflow:auto}
+  #pdf-scroll{padding:18px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  #pdf-img{max-width:100%;width:1000px;height:auto;display:block;background:#fff;
+    box-shadow:0 4px 22px rgba(0,0,0,.4);border-radius:2px}
+  #pdf-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding-bottom:6px}
+  #pdf-actions .btn{text-decoration:none}
+  #pdf-actions .btn-ghost{background:rgba(255,255,255,.92)}
+
+  #stage-cover{position:absolute;inset:0;background:rgba(243,244,249,.97);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px}
+  #stage-cover h3{font-size:17px;color:var(--ink)}
+  #stage-cover p{font-size:13.5px;color:var(--muted);max-width:420px}
+  .spinner{width:26px;height:26px;border:3px solid #d5dae8;border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ── Controls ── */
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:13px 20px;border-top:1px solid var(--border);background:#fbfcfe}
+  .btn{font-family:var(--font);font-size:13px;font-weight:600;border-radius:6px;padding:8px 16px;cursor:pointer;border:1px solid transparent;transition:background .16s,border-color .16s}
+  .btn-primary{background:var(--navy);color:#fff}
+  .btn-primary:hover{background:var(--navy-hover)}
+  .btn-ghost{background:transparent;color:var(--navy);border-color:#cdd4e6}
+  .btn-ghost:hover{background:#eef1fa}
+  .btn:disabled{opacity:.45;cursor:default}
+  .rail{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  .rail button{font-family:var(--font);font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:20px;cursor:pointer;
+    border:1px solid var(--border);background:#fff;color:var(--muted);transition:all .16s}
+  .rail button:hover{border-color:var(--navy);color:var(--navy)}
+  .rail button[aria-current="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+  .rail button.done{color:var(--success);border-color:#bfe0c8}
+  .rail button.done[aria-current="true"]{color:#fff}
+
+  .progress{height:3px;background:#e6e9f3}
+  .progress div{height:100%;width:0;background:var(--navy);transition:width .3s linear}
+
+  /* ── Footer CTA ── */
+  .cta{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-top:20px;padding:24px 26px;text-align:center}
+  .cta h2{font-size:17px;margin-bottom:6px}
+  .cta p{font-size:14px;color:var(--muted);margin-bottom:18px}
+  .cta-row{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
+  .btn-lg{display:inline-flex;align-items:center;gap:9px;text-decoration:none;font-size:15px;padding:13px 26px;border-radius:8px}
+
+  .note{font-size:12px;color:var(--faint);text-align:center;padding:18px 16px 0;line-height:1.7}
+
+  /* Phone: an iframe of a desktop tool is not worth showing. */
+  #small-screen{display:none;background:var(--card);border:1px solid var(--border);border-radius:10px;
+    box-shadow:var(--shadow);margin-top:-14px;padding:30px 24px;text-align:center}
+  #small-screen h2{font-size:17px;margin-bottom:8px}
+  #small-screen p{font-size:14px;color:var(--muted);margin-bottom:18px}
+  @media (max-width:860px){
+    .stage-wrap{display:none}
+    #small-screen{display:block}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" href="./">&larr; Back</a>
+  <div class="kicker">Guided Walkthrough</div>
+  <h1>Pricing Assistant — Live Demo</h1>
+</header>
+
+<main>
+
+  <!-- Narrow screens get the point and the download, not a squeezed iframe -->
+  <section id="small-screen">
+    <h2>The demo needs a wider screen</h2>
+    <p>This walkthrough drives the full tool, which is built for a laptop. Open this
+       page on a computer to watch it — or download the tool now and try it yourself.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary btn-lg" href="pricing-assistant.html" download>Download the tool</a>
+      <a class="btn btn-ghost btn-lg" href="assets/sample-rate-increase.pdf" target="_blank" rel="noopener">See a sample PDF</a>
+    </div>
+  </section>
+
+  <section class="stage-wrap">
+    <div class="narration">
+      <div class="num" id="step-num">1</div>
+      <div class="txt">
+        <h2 id="step-title">Loading the tool…</h2>
+        <p id="step-caption">This is the real application, running in your browser. Nothing is simulated.</p>
+      </div>
+    </div>
+
+    <div class="progress"><div id="progress-bar"></div></div>
+
+    <div class="viewport" id="viewport">
+      <iframe id="app" src="pricing-assistant.html" title="Pricing Assistant"></iframe>
+      <div id="pdf-stage">
+        <div id="pdf-scroll">
+          <img id="pdf-img" alt="The exported PDF: rate increase analysis for five timekeepers">
+          <div id="pdf-actions">
+            <a class="btn btn-primary" href="assets/sample-rate-increase.pdf" download>Download this PDF</a>
+            <a class="btn btn-ghost" href="assets/sample-rate-increase.pdf" target="_blank" rel="noopener">Open in a new tab</a>
+          </div>
+        </div>
+      </div>
+      <div id="stage-cover">
+        <div class="spinner"></div>
+        <h3>Loading the tool…</h3>
+        <p>The full application is about 2.4&nbsp;MB. It loads once, then the walkthrough begins.</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-primary" id="btn-play">Start the demo</button>
+      <button class="btn btn-ghost" id="btn-restart">Restart</button>
+      <div class="rail" id="rail"></div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Every number above was computed live</h2>
+    <p>The same file you download does all of this on your machine, with no internet connection.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary btn-lg" href="pricing-assistant.html" download>Download the Pricing Assistant</a>
+      <a class="btn btn-ghost btn-lg" href="assets/sample-rate-increase.pdf" download>Download the sample PDF</a>
+    </div>
+  </section>
+
+  <p class="note">
+    Runs entirely in your browser. The sample rate card is fictional.
+  </p>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var frame   = document.getElementById('app');
+  var viewport= document.getElementById('viewport');
+  var cover   = document.getElementById('stage-cover');
+  var pdfStage= document.getElementById('pdf-stage');
+  var pdfImg  = document.getElementById('pdf-img');
+  var elNum   = document.getElementById('step-num');
+  var elTitle = document.getElementById('step-title');
+  var elCap   = document.getElementById('step-caption');
+  var bar     = document.getElementById('progress-bar');
+  var btnPlay = document.getElementById('btn-play');
+  var btnRe   = document.getElementById('btn-restart');
+  var rail    = document.getElementById('rail');
+
+  // The demo cast: 40 hours total, deliberately uneven. [tkid, hours, proposed % increase]
+  var CAST = [
+    ['TK005',  4, 8],   // Equity Partner
+    ['TK002',  6, 7],   // Non-Equity Partner
+    ['TK006',  8, 6],   // Counsel
+    ['TK004', 10, 5],   // Associate
+    ['TK001', 12, 5]    // Associate
+  ];
+  var RATE_FACTOR = 0.91;   // current rates sit at ~91% of standard
+
+  var APP_W = 1360, APP_H = 1000;
+
+  // Scale the 1360px app down to whatever width the page has.
+  function fit() {
+    var w = viewport.clientWidth;
+    var s = Math.min(1, w / APP_W);
+    frame.style.transform = 'scale(' + s + ')';
+    viewport.style.height = Math.round(APP_H * s) + 'px';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  // ── Helpers that reach into the app ───────────────────────────────────
+  // Only `function` declarations land on the frame's window; `let`/`const`
+  // globals (selectedTK, budgetLines, …) do not, so those are read with eval
+  // inside the frame's own scope.
+  function W() { return frame.contentWindow; }
+  function D() { return frame.contentDocument; }
+  function ev(expr) { return W().eval(expr); }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  // Steps animate at normal speed when played, but collapse to instant while
+  // replaying the ones before a step the viewer jumped to.
+  var speed = 1;
+  function pace(ms) { return wait(Math.round(ms * speed)); }
+  function scrollTo(sel) {
+    var el = D().querySelector(sel);
+    if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function setField(row, name, value) {
+    var i = row.querySelector('input[data-f="' + name + '"]');
+    if (!i) return;
+    i.value = String(value);
+    i.dispatchEvent(new (W().Event)('change', { bubbles: true }));
+  }
+  function showApp()  { pdfStage.style.display = 'none'; }
+  function showPDF()  { pdfStage.style.display = 'block'; }
+
+  function closeSettings() {
+    var o = D().getElementById('settings-overlay');
+    if (o) o.style.display = 'none';
+  }
+
+  // ── The walkthrough ───────────────────────────────────────────────────
+  var STEPS = [
+    {
+      tab: 'Settings',
+      title: 'Settings — the firm’s policy, set once',
+      caption: 'Firm name, letterhead and the approval policy live here. This firm runs a ' +
+               '90% realization floor, a 20% profit target and a 10% profit floor — and those ' +
+               'numbers drive every analysis and every KPI colour in the tool.',
+      hold: 7000,
+      run: async function () {
+        showApp();
+        // #welcome-overlay is the dimmed backdrop; #welcome-modal is only the box
+        // inside it. Hiding the box alone leaves the whole app greyed out.
+        ['welcome-overlay', 'welcome-modal'].forEach(function (id) {
+          var el = D().getElementById(id);
+          if (el) el.style.display = 'none';
+        });
+        W().openSettings();
+        await pace(700);
+        scrollTo('#cfg-cfo-target, #cfg-real-threshold');
+      }
+    },
+    {
+      tab: 'The team',
+      title: 'A rate increase for a five-person team',
+      caption: 'Switch to Rate Increase and pull five timekeepers from the rate card — an equity ' +
+               'partner, a non-equity partner, counsel and two associates.',
+      hold: 5500,
+      run: async function () {
+        showApp();
+        closeSettings();
+        D().getElementById('analysis-type').value = 'rateIncrease';
+        W().switchAnalysis();
+        await pace(400);
+        for (var i = 0; i < CAST.length; i++) { W().addTK(CAST[i][0]); await pace(260); }
+        scrollTo('#selected-tk-table');
+      }
+    },
+    {
+      tab: '40 hours',
+      title: '40 hours, spread the way a matter really staffs',
+      caption: 'Hours go in per person — 4 for the equity partner up to 12 for the junior associate, ' +
+               '40 in total. That uneven spread is what makes the blended rate a <b>weighted</b> ' +
+               'number rather than an average of five rates.',
+      hold: 6000,
+      run: async function () {
+        showApp();
+        var rows = D().querySelectorAll('#tk-tbody tr[data-tkid]');
+        for (var i = 0; i < rows.length; i++) {
+          var row = rows[i], id = row.dataset.tkid;
+          var spec = CAST.filter(function (c) { return c[0] === id; })[0];
+          if (!spec) continue;
+          var tk  = ev('selectedTK').filter(function (t) { return t.tkid === id; })[0];
+          var cur = Math.round(W().baseRate(tk) * RATE_FACTOR / 25) * 25;
+          setField(row, 'currentRate', cur);
+          await pace(180);
+          setField(row, 'hours', spec[1]);
+          await pace(240);
+        }
+        scrollTo('#selected-tk-table');
+      }
+    },
+    {
+      tab: 'Increases',
+      title: 'A different increase for each level',
+      caption: 'The partner gets +8%, the non-equity partner +7%, counsel +6%, the associates +5%. ' +
+               'Each row can move independently — the tool works out what that means overall.',
+      hold: 5500,
+      run: async function () {
+        showApp();
+        var rows = D().querySelectorAll('#tk-tbody tr[data-tkid]');
+        for (var i = 0; i < rows.length; i++) {
+          var row = rows[i], id = row.dataset.tkid;
+          var spec = CAST.filter(function (c) { return c[0] === id; })[0];
+          if (!spec) continue;
+          setField(row, 'propPct', spec[2]);
+          await pace(320);
+        }
+        scrollTo('#selected-tk-table');
+      }
+    },
+    {
+      tab: 'Run it',
+      title: 'Run — and there is the weighted answer',
+      caption: 'Individual increases of 5–8% blend to <b>+6.1% overall</b>, because the juniors carry ' +
+               'the hours. Blended rate moves $1,541 → $1,635 and realization 91% → 97%.',
+      hold: 8000,
+      run: async function () {
+        showApp();
+        W().runAnalysis();
+        await pace(900);
+        scrollTo('#output-section .kpi-strip, #output-content');
+      }
+    },
+    {
+      tab: 'Options',
+      title: 'Every option side by side',
+      caption: 'Below the detail table, the scenario summary prices the alternatives — the proposal as ' +
+               'entered, matching standard rates, and flat across-the-board increases of 5, 10, 15 and ' +
+               '20% — each with its blended rate, realization and profit margin.',
+      hold: 8000,
+      run: async function () {
+        showApp();
+        var tables = D().querySelectorAll('#output-content table');
+        if (tables.length > 1) tables[tables.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    },
+    {
+      tab: 'PDF',
+      title: 'Print / PDF — a client-ready document',
+      caption: 'Print / PDF renders the analysis through the tool’s print layout. This is the actual ' +
+               'file it produces — letterhead, KPIs, the full rate detail and every scenario, on one page.',
+      hold: 9000,
+      run: async function () {
+        if (!pdfImg.getAttribute('src')) pdfImg.setAttribute('src', 'assets/sample-rate-increase.png');
+        pdfStage.scrollTop = 0;
+        showPDF();
+        await pace(300);
+      }
+    }
+  ];
+
+  // ── Player ────────────────────────────────────────────────────────────
+  var idx = -1, playing = false, token = 0, started = false;
+
+  STEPS.forEach(function (s, i) {
+    var b = document.createElement('button');
+    b.textContent = (i + 1) + '. ' + s.tab;
+    b.addEventListener('click', function () { pause(); jump(i); });
+    rail.appendChild(b);
+  });
+
+  function paintRail() {
+    [].forEach.call(rail.children, function (b, i) {
+      b.setAttribute('aria-current', String(i === idx));
+      b.classList.toggle('done', i < idx);
+    });
+  }
+
+  function setNarration(s, i) {
+    elNum.textContent = i + 1;
+    elTitle.textContent = s.title;
+    elCap.innerHTML = s.caption;
+  }
+
+  function animateBar(ms, my) {
+    bar.style.transition = 'none'; bar.style.width = '0%';
+    void bar.offsetWidth;
+    bar.style.transition = 'width ' + ms + 'ms linear';
+    bar.style.width = '100%';
+  }
+
+  async function go(i, autoAdvance) {
+    if (i < 0 || i >= STEPS.length) return;
+    var my = ++token;
+    idx = i;
+    var s = STEPS[i];
+    setNarration(s, i);
+    paintRail();
+    window.demoBusy = true;
+    try {
+      await s.run();
+    } catch (e) {
+      elTitle.textContent = 'The walkthrough stopped here';
+      elCap.innerHTML = 'Something in this step did not run. You can still ' +
+        '<a href="pricing-assistant.html" download>download the tool</a> and try it yourself.';
+      playing = false; btnPlay.textContent = 'Start the demo';
+      window.demoBusy = false;
+      return;
+    }
+    window.demoBusy = false;
+    if (my !== token) return;
+    if (autoAdvance && playing) {
+      animateBar(s.hold, my);
+      await wait(s.hold);
+      if (my !== token || !playing) return;
+      if (i + 1 < STEPS.length) { go(i + 1, true); }
+      else { playing = false; btnPlay.textContent = 'Play again'; bar.style.width = '100%'; }
+    } else {
+      bar.style.transition = 'none'; bar.style.width = '0%';
+    }
+  }
+
+  // Steps build on each other, so jumping to one has to replay the earlier ones.
+  // They run back-to-back with no narration hold, so it lands in well under a second.
+  async function jump(target) {
+    var my = ++token;
+    window.demoBusy = true;
+    for (var i = 0; i <= target; i++) {
+      if (my !== token) { window.demoBusy = false; return; }
+      idx = i;
+      setNarration(STEPS[i], i);
+      paintRail();
+      speed = (i === target) ? 1 : 0;      // replay the earlier steps instantly
+      try { await STEPS[i].run(); } catch (e) { /* go() surfaces failures on normal play */ }
+    }
+    speed = 1;
+    bar.style.transition = 'none'; bar.style.width = '0%';
+    window.demoBusy = false;
+  }
+
+  function play() {
+    playing = true;
+    btnPlay.textContent = 'Pause';
+    go(idx < 0 || idx >= STEPS.length - 1 && !started ? 0 : (idx < 0 ? 0 : idx), true);
+    started = true;
+  }
+  function pause() {
+    playing = false; token++;
+    btnPlay.textContent = 'Resume';
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+  }
+
+  btnPlay.addEventListener('click', function () {
+    if (playing) pause();
+    else {
+      if (idx >= STEPS.length - 1) { restart(); return; }
+      play();
+    }
+  });
+  btnRe.addEventListener('click', restart);
+
+  function restart() {
+    token++; playing = false; idx = -1;
+    bar.style.transition = 'none'; bar.style.width = '0%';
+    showApp();
+    btnPlay.textContent = 'Start the demo';
+    frame.src = 'pricing-assistant.html';   // clean slate
+    cover.style.display = 'flex';
+    cover.querySelector('h3').textContent = 'Reloading the tool…';
+  }
+
+  // Wait for the app before enabling anything.
+  frame.addEventListener('load', function () {
+    fit();
+    var tries = 0;
+    (function ready() {
+      var ok = false;
+      try { ok = typeof W().runAnalysis === 'function'; } catch (e) { ok = false; }
+      if (ok) {
+        cover.style.display = 'none';
+        btnPlay.disabled = false;
+        if (!started) {
+          elTitle.textContent = 'Ready when you are';
+          elCap.textContent = 'Seven steps, about a minute: firm settings, a weighted rate increase ' +
+                              'across five timekeepers, and the PDF it exports.';
+        } else { play(); }
+      } else if (++tries < 60) { setTimeout(ready, 150); }
+      else {
+        cover.querySelector('h3').textContent = 'The tool could not be loaded here';
+        cover.querySelector('p').innerHTML =
+          '<a href="pricing-assistant.html" download>Download it instead</a> — it runs offline on your machine.';
+      }
+    })();
+  });
+
+  btnPlay.disabled = true;
+})();
+</script>
+
+</body>
+</html>
