@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing Assistant — Download</title>
+<meta name="author" content="Sergey Mezhiritskiy">
+<meta name="description" content="Download the Pricing Assistant: a single self-contained HTML file that runs entirely in your browser, offline. Nothing is uploaded and nothing is installed.">
+<meta name="color-scheme" content="light">
+<meta property="og:title" content="Pricing Assistant">
+<meta property="og:description" content="A single self-contained HTML file. Runs offline, in your browser. Nothing uploaded, nothing installed.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="__APP_URL__">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231a2b5e'/><text x='16' y='23' font-size='19' font-family='Arial,Helvetica,sans-serif' font-weight='700' fill='white' text-anchor='middle'>P</text></svg>">
+<style>
+  :root {
+    --navy: #1a2b5e;
+    --navy-deep: #131f45;
+    --navy-hover: #24397a;
+    --ink: #1e2435;
+    --muted: #5b6480;
+    --faint: #8a91a6;
+    --border: #dde0eb;
+    --border-soft: #e9ecf4;
+    --bg: #f3f4f9;
+    --card: #ffffff;
+    --success: #1a6b2e;
+    --warn-bg: #fff4e5;
+    --warn-border: #e0a355;
+    --warn-ink: #7a4b00;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --radius: 10px;
+    --shadow: 0 1px 2px rgba(19,31,69,.05), 0 8px 28px rgba(19,31,69,.09);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.55;
+    font-size: 15px;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(120deg, var(--navy-deep) 0%, var(--navy) 55%, #23346c 100%);
+    color: #fff;
+    padding: 30px 16px 34px;
+    text-align: center;
+  }
+  header h1 { font-size: 27px; font-weight: 700; letter-spacing: -.4px; }
+  header .kicker {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.7px;
+    font-weight: 600; color: #9db0dd; margin-bottom: 9px;
+  }
+  header .byline { font-size: 13px; color: #dce4f7; margin-top: 8px; }
+
+  /* ── Layout ── */
+  main { max-width: 760px; margin: 0 auto; padding: 0 16px 64px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 26px;
+    margin-top: -20px;
+  }
+  .card + .card { margin-top: 20px; }
+
+  .lede { font-size: 16px; color: var(--muted); text-align: center; margin-bottom: 24px; }
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  /* ── Download ── */
+  .dl-wrap { text-align: center; }
+  .btn-dl {
+    display: inline-flex; align-items: center; justify-content: center; gap: 11px;
+    background: var(--navy); color: #fff; text-decoration: none;
+    font-size: 16px; font-weight: 600; font-family: var(--font);
+    padding: 15px 34px; border: none; border-radius: 8px; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(26,43,94,.28);
+    transition: background .18s, transform .06s, box-shadow .18s;
+  }
+  .btn-dl:hover { background: var(--navy-hover); box-shadow: 0 4px 16px rgba(26,43,94,.34); }
+  .btn-dl:active { transform: translateY(1px); }
+  .btn-dl:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(26,43,94,.24); }
+  .btn-dl svg { flex: 0 0 auto; }
+  .dl-meta { font-size: 12px; color: var(--faint); margin-top: 11px; }
+
+  /* ── Assurances ── */
+  .points { list-style: none; margin: 26px auto 0; max-width: 520px; }
+  .points li {
+    display: flex; gap: 11px; align-items: flex-start;
+    font-size: 14px; color: var(--muted); padding: 7px 0;
+  }
+  .points .tick { flex: 0 0 auto; margin-top: 3px; color: var(--success); }
+  .points b { color: var(--ink); font-weight: 600; }
+
+  /* ── QR ── */
+  .qr-section { text-align: center; }
+  .qr-section h2 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--faint); font-weight: 700; margin-bottom: 16px;
+  }
+  .qr-box {
+    display: inline-block; background: #fff; padding: 16px;
+    border: 1px solid var(--border); border-radius: 10px; line-height: 0;
+  }
+  .qr-box svg { width: 208px; height: 208px; display: block; }
+  .qr-url {
+    font-size: 12px; color: var(--muted); margin-top: 13px;
+    word-break: break-all; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .qr-dl { margin-top: 14px; font-size: 12.5px; }
+  .qr-dl a { color: var(--navy); text-decoration: none; font-weight: 600; }
+  .qr-dl a:hover { text-decoration: underline; }
+  .qr-dl span { color: var(--border); margin: 0 9px; }
+
+  /* ── Steps ── */
+  h2.sec {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--faint); font-weight: 700; margin-bottom: 15px;
+  }
+  ol.steps { margin: 0; padding-left: 0; list-style: none; counter-reset: s; }
+  ol.steps li {
+    counter-increment: s; position: relative;
+    padding: 0 0 15px 38px; font-size: 14px; color: var(--muted);
+  }
+  ol.steps li:last-child { padding-bottom: 0; }
+  ol.steps li::before {
+    content: counter(s); position: absolute; left: 0; top: 0;
+    width: 25px; height: 25px; border-radius: 50%;
+    background: var(--navy); color: #fff;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  ol.steps b { color: var(--ink); font-weight: 600; }
+  code {
+    background: #eef1fa; color: var(--navy); padding: 1.5px 6px;
+    border-radius: 4px; font-size: 12.5px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  /* ── URL mismatch warning ── */
+  #url-warning {
+    display: none; margin: 18px 0 0;
+    background: var(--warn-bg); border: 1px solid var(--warn-border);
+    border-radius: 8px; padding: 13px 16px;
+    font-size: 13px; color: var(--warn-ink); text-align: left;
+  }
+  #url-warning b { display: block; margin-bottom: 4px; }
+  #url-warning code { background: rgba(0,0,0,.06); color: var(--warn-ink); }
+
+  footer {
+    text-align: center; font-size: 12px; color: var(--faint);
+    padding: 26px 16px 0; line-height: 1.7;
+  }
+
+  @media (max-width: 560px) {
+    header { padding: 24px 16px 30px; }
+    header h1 { font-size: 22px; }
+    .card { padding: 22px 18px; }
+    .btn-dl { width: 100%; padding: 15px 20px; font-size: 15px; }
+    .qr-box svg { width: 172px; height: 172px; }
+  }
+
+  /* Printing this page gives you a QR handout and nothing else. */
+  @media print {
+    body { background: #fff; font-size: 12px; }
+    header { background: #fff !important; color: var(--navy) !important; padding: 0 0 14px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    header .kicker, header .byline { color: var(--muted) !important; }
+    main { max-width: 100%; padding: 0; }
+    .card { box-shadow: none; border: none; margin: 0; padding: 8px 0; page-break-inside: avoid; }
+    .no-print, #url-warning { display: none !important; }
+    .qr-box { border: 1px solid #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Legal Pricing</div>
+  <h1>Pricing Assistant</h1>
+  <div class="byline">Built by Sergey Mezhiritskiy</div>
+</header>
+
+<main>
+
+  <section class="card">
+    <p class="lede">
+      One file. Open it in any browser and it just runs —
+      <strong>offline, with nothing installed and nothing uploaded.</strong>
+    </p>
+
+    <div class="dl-wrap">
+      <a class="btn-dl" href="__APP_FILE__" download id="download-link">
+        <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M10 2.5v10m0 0 4-4m-4 4-4-4M3 14.5v1A2.5 2.5 0 0 0 5.5 18h9a2.5 2.5 0 0 0 2.5-2.5v-1"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Download the Pricing Assistant
+      </a>
+      <div class="dl-meta">Single HTML file · __APP_SIZE__ · works on Windows, Mac, iPad and phones</div>
+    </div>
+
+    <ul class="points">
+      <li><svg class="tick" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4 10.5 4 4 8-9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>Runs entirely on your machine.</b> No account, no sign-in, no server.</span></li>
+      <li><svg class="tick" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4 10.5 4 4 8-9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>Your data never leaves the browser.</b> Rate cards you load stay on your device.</span></li>
+      <li><svg class="tick" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4 10.5 4 4 8-9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>Works with no internet.</b> Everything it needs is inside the file.</span></li>
+      <li><svg class="tick" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4 10.5 4 4 8-9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>Yours to keep.</b> Save it, email it, put it on a shared drive.</span></li>
+    </ul>
+  </section>
+
+  <section class="card qr-section">
+    <h2>Scan to open this page</h2>
+    <div class="qr-box">__QR_SVG__</div>
+    <div class="qr-url">__APP_URL__</div>
+    <div class="qr-dl no-print">
+      <a href="assets/qr.png" download>QR as PNG</a><span>·</span>
+      <a href="assets/qr.svg" download>SVG</a><span>·</span>
+      <a href="assets/qr-card.svg" download>Slide card</a>
+    </div>
+    <div id="url-warning">
+      <b>Heads up — this QR points somewhere else.</b>
+      The code above encodes <code id="warn-baked"></code>, but you are viewing this page at
+      <code id="warn-actual"></code>. Re-run <code>python3 build/make_site.py --url &lt;this page's URL&gt;</code>
+      before printing or presenting it.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 class="sec">Using it</h2>
+    <ol class="steps">
+      <li><b>Download the file.</b> It lands in your Downloads folder as <code>__APP_FILE__</code>.</li>
+      <li><b>Double-click it.</b> It opens in your default browser. There is no install step.</li>
+      <li><b>Work in it.</b> Load a rate card, price the matter, export to Excel or PDF.</li>
+      <li><b>Keep it.</b> Move it anywhere — a USB stick, a network drive, an email attachment. It keeps working, online or off.</li>
+    </ol>
+  </section>
+
+  <footer>
+    Pricing Assistant · built by Sergey Mezhiritskiy<br>
+    Runs locally in your browser. No data is collected or transmitted.
+  </footer>
+
+</main>
+
+<script>
+  // Guard against a stale QR: if this page is being served from an address
+  // other than the one baked into the code above, say so loudly rather than
+  // let a wrong code reach a slide or a handout.
+  (function () {
+    var baked = "__APP_URL__";
+    try {
+      var actual = location.origin + location.pathname;
+      var norm = function (u) {
+        return String(u).replace(/index\.html$/i, "").replace(/\/+$/, "").toLowerCase();
+      };
+      // Only meaningful when actually served over http(s); opening this page
+      // from a local file is expected to differ.
+      if (/^https?:/.test(location.protocol) && norm(actual) !== norm(baked)) {
+        document.getElementById("warn-baked").textContent = baked;
+        document.getElementById("warn-actual").textContent = actual;
+        document.getElementById("url-warning").style.display = "block";
+      }
+    } catch (e) { /* never let this break the page */ }
+  })();
+</script>
+
+</body>
+</html>

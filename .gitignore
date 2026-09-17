@@ -1,0 +1,4 @@
+# Build scratch
+*.tgz
+__pycache__/
+.DS_Store
