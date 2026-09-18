@@ -81,6 +81,21 @@
 
   /* ── Download ── */
   .dl-wrap { text-align: center; }
+  /* Link back to the talk this tool was shown in. Sits above the download
+     button as a chip, so it is clearly available without competing with the
+     primary action. */
+  .talk-row { margin-bottom: 16px; }
+  .talk-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 15px;
+    font-size: 13px; font-weight: 600; text-decoration: none;
+    color: var(--navy); background: var(--navy-soft, #eef1fa);
+    border: 1px solid #d5dcef; border-radius: 20px;
+    transition: background .18s, border-color .18s;
+  }
+  .talk-link:hover { background: #e3e9f8; border-color: var(--navy); }
+  .talk-link:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(26,43,94,.22); }
+  .talk-link svg { flex: 0 0 auto; opacity: .75; }
   .btn-dl {
     display: inline-flex; align-items: center; justify-content: center; gap: 11px;
     background: var(--navy); color: #fff; text-decoration: none;
@@ -209,6 +224,17 @@
     </p>
 
     <div class="dl-wrap">
+      <div class="talk-row"><a class="talk-link" href="https://lvnx-vibe-coding.theablabs.com/" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M3 4.5h14v9H3zM7 17h6M10 13.5V17" stroke="currentColor" stroke-width="1.7"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        The LVNX presentation
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M11 3h6v6M17 3l-8 8M15 11.5V17H3V5h5.5" stroke="currentColor" stroke-width="1.7"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a></div>
       <a class="btn-dl" href="pricing-assistant.html" download id="download-link">
         <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="M10 2.5v10m0 0 4-4m-4 4-4-4M3 14.5v1A2.5 2.5 0 0 0 5.5 18h9a2.5 2.5 0 0 0 2.5-2.5v-1"
