@@ -170,6 +170,33 @@
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
 
+  /* ── Make it yours ── */
+  .build-lede { font-size: 16.5px; font-weight: 600; color: var(--ink); margin-bottom: 12px; }
+  .build-body { font-size: 14px; color: var(--muted); margin-bottom: 12px; }
+  .build-sub {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--faint); font-weight: 700; margin: 20px 0 10px;
+  }
+  .build-list { list-style: none; margin: 0; }
+  .build-list li {
+    position: relative; padding: 0 0 9px 20px;
+    font-size: 14px; color: var(--muted); line-height: 1.6;
+  }
+  .build-list li:last-child { padding-bottom: 0; }
+  .build-list li::before {
+    content: ""; position: absolute; left: 3px; top: 9px;
+    width: 5px; height: 5px; border-radius: 50%; background: #bcc5dd;
+  }
+  .build-list b { color: var(--ink); font-weight: 600; }
+  .build-tip {
+    margin-top: 20px; padding: 14px 16px;
+    background: #f7f9fd; border-left: 3px solid var(--navy);
+    border-radius: 0 6px 6px 0; font-size: 13.5px; color: var(--muted); line-height: 1.65;
+  }
+  .build-tip b { color: var(--ink); font-weight: 600; }
+  .build-tip a, .build-close a { color: var(--navy); font-weight: 600; }
+  .build-close { margin: 20px 0 0; padding-top: 16px; border-top: 1px solid var(--border-soft); }
+
   /* ── URL mismatch warning ── */
   #url-warning {
     display: none; margin: 18px 0 0;
@@ -283,6 +310,49 @@
       <li><b>Work in it.</b> Load a rate card, price the matter, export to Excel or PDF.</li>
       <li><b>Keep it.</b> Move it anywhere — a USB stick, a network drive, an email attachment. It keeps working, online or off.</li>
     </ol>
+  </section>
+
+  <section class="card build-card">
+    <h2 class="sec">Make it yours</h2>
+
+    <p class="build-lede">This is a starting point, not a finished product.</p>
+
+    <p class="build-body">
+      It was built quickly, for a conference talk, around one set of assumptions. It is
+      opinionated, it has rough edges, and it almost certainly does not match how your
+      firm prices. That is the point &mdash; it is meant to be taken apart.
+    </p>
+    <p class="build-body">
+      It is a single HTML file with readable source. You do not need a developer and you
+      do not need to learn to code: open it, or hand it to an AI assistant, describe the
+      change in plain English, and get an edited file back. Then keep going.
+    </p>
+
+    <h3 class="build-sub">What people change first</h3>
+    <ul class="build-list">
+      <li><b>The rate card.</b> Swap the sample timekeepers for your own &mdash; Settings does this without touching any code.</li>
+      <li><b>The thresholds.</b> Realization floor, profit target, profit floor. They drive every KPI colour in the tool.</li>
+      <li><b>The scenarios.</b> Discount tiers and rate-increase percentages, so the comparisons match the conversations you actually have.</li>
+      <li><b>The phases and tasks</b> in the budget view, to match your own matter taxonomy.</li>
+      <li><b>The letterhead and export wording</b>, so what comes out looks like it came from you.</li>
+      <li><b>The KPIs themselves.</b> Add the numbers your partners argue about, and drop the ones they don't.</li>
+    </ul>
+
+    <div class="build-tip">
+      <b>A practical note on using AI tools.</b>
+      The downloaded file is 2.4 MB, and most of that is bundled libraries that will
+      crowd an AI's context window for no benefit. Start from
+      <a href="https://github.com/PowerSurge91/Legal-Pricing-Assistant-/blob/main/src/pricing-assistant.src.html"
+         target="_blank" rel="noopener">the source file</a> instead &mdash; the same
+      application, without the libraries. The rate data sits between two clearly marked
+      comments so it is easy to point at.
+    </div>
+
+    <p class="build-body build-close">
+      Build something better with it, and I would genuinely like to see it &mdash;
+      <a href="https://www.linkedin.com/in/sergey-mezhiritskiy-alpp-b9201a28"
+         target="_blank" rel="noopener noreferrer">tell me what you made</a>.
+    </p>
   </section>
 
   <footer>
