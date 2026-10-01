@@ -1,5 +1,13 @@
 # Pricing Assistant
 
+> **Status: retired (October 2026).** The site no longer distributes the tool.
+> `index.html` and `404.html` are both copies of `src/retired.html`, so the QR
+> code and any old links to the download or demo land on a short retirement note
+> instead of a bare 404. The source and build tooling are unchanged.
+>
+> **To relaunch** the full site — download, demo and sample PDF — `git revert`
+> the commit titled *"Retire the site"*. Nothing needs rebuilding.
+
 A legal matter pricing tool that runs entirely in the browser, as a **single
 self-contained HTML file**. No install, no server, no account, no network — you
 can open it from a USB stick on a plane and every feature still works.
